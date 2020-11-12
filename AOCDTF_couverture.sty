@@ -1,0 +1,77 @@
+% Declare that this style file requires at least LaTeX version 2e.
+\NeedsTeXFormat{LaTeX2e}
+
+% Provide the name of your page, the date it was last updated, and a comment about what it's used for
+\ProvidesPackage{AOCDTF_couverture}
+
+%--------------------------------------
+%Page de couverture
+%--------------------------------------
+
+\newcommand{\pagecouverture}{
+\pagestyle{empty}
+
+\begingroup
+
+%--------------------------------------
+%arrière-plan
+%--------------------------------------
+	\begin{tikzpicture}[remember picture, overlay]
+		\begin{scope}[shift={(current page.south west)}]
+			\draw[draw=lightgray,fill=lightgray] (0,0) rectangle (21,30);
+		\end{scope}
+	\end{tikzpicture}
+
+%--------------------------------------
+%bandeau vertical
+%--------------------------------------
+
+	\begin{tikzpicture}[remember picture, overlay]
+		\begin{scope}[shift={(current page.south west)}]
+			\draw[draw=orangelogo,fill=orangelogo, opacity=0.7] (0,0) rectangle (4,30);
+		\end{scope}
+	\end{tikzpicture}
+
+%--------------------------------------
+%texte dans bandeau vertical
+%--------------------------------------
+  
+	\begin{tikzpicture}[remember picture, overlay]
+	\begin{scope}[shift={(current page.south west)}]
+			\draw (1.8,1) node [right, rotate=90, opacity=0.7] {\sffamily\textbf{\Large\color{bleulogo}\MakeTextUppercase{\showcorpsdemetier}}};
+			\draw (2.5,1) node [right, rotate=90, opacity=0.7] {\sffamily\textbf{\Large\color{bleulogo}ASSOCIATION OUVRIÈRE DES COMPAGNONS DU DEVOIR ET DU TOUR DE FRANCE}};
+			\draw (3.4,29) node [left, rotate=90, opacity=0.7] {\sffamily\textls[200]{\Huge\textbf{\color{bleulogo}\MakeTextUppercase{\showformation}}}};
+		\end{scope}
+	\end{tikzpicture}
+
+%--------------------------------------
+%titre 
+%--------------------------------------
+
+	\begin{tikzpicture}[remember picture, overlay]
+		\begin{scope}[shift={(current page.north west)}]
+		\draw (5,-14.5) node [text width=14cm, anchor=south west, opacity=0.7] {\baselineskip=25pt\sffamily{\Huge\textbf{\color{bleulogo}\showmatiere}}\par}; %intitulé de la matière
+		\draw (20,-15.5) node [text width=14cm, align=flush right, anchor=north east, opacity=0.7] {\baselineskip=25pt\sffamily{\Huge\textbf{\color{bleulogo}\showcours}}\par}; %intitulé du cours
+		\draw[very thick, orangelogo, opacity=0.7] (5,-15) -- (20,-15);
+		\end{scope}
+	\end{tikzpicture}
+
+%--------------------------------------
+%logo
+%--------------------------------------
+
+	\begin{tikzpicture}[remember picture, overlay]
+		\begin{scope}[shift={(current page.north west)}]
+			\draw (12.5,-7)
+			node [opacity=0.3] {\includegraphics[width=14cm]{fichiers_multimedias/logo_compagnons.png}};
+			\draw (12.5,-23)
+			node [opacity=0.3] {\includegraphics[width=10cm]{fichiers_multimedias/blason_\showacronymemetier}};
+		\end{scope}
+	\end{tikzpicture}
+
+\endgroup
+
+\null\cleardoublepage}
+
+% Finally, we'll use \endinput to indicate that LaTeX can stop reading this file. LaTeX will ignore anything after this line.
+\endinput

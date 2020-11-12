@@ -1,0 +1,71 @@
+% Declare that this style file requires at least LaTeX version 2e.
+\NeedsTeXFormat{LaTeX2e}
+
+% Provide the name of your page, the date it was last updated, and a comment about what it's used for
+\ProvidesPackage{AOCDTF_titre}
+
+%--------------------------------------
+%Page de titre
+%--------------------------------------
+\newcommand{\pagetitre}{
+
+\pagestyle{empty}
+\thispagestyle{empty}
+
+\begingroup
+
+%--------------------------------------
+%logo Compagnon
+%--------------------------------------
+ 
+\vfill
+\begin{center}
+\includegraphics[scale=0.1]{fichiers_multimedias/logo_compagnons}
+\end{center}
+\vfill
+
+%--------------------------------------
+%titre de la page
+%--------------------------------------
+
+\begin{flushleft}
+	\HUGE\sffamily\textbf{\showmatiere}\\
+\end{flushleft}
+\HRule
+\begin{flushright}
+	\huge\sffamily\textbf{\showcours}\\[0.4cm]
+\end{flushright}
+\vfill
+%--------------------------------------
+%auteur et logo
+%--------------------------------------
+
+\begin{tabularx}{0.3\linewidth}{c X}
+\adjustbox{valign=c}{\includegraphics[width=1.5cm]{fichiers_multimedias/blason_\showacronymemetierauteura}}	&	\showauteura \\
+\adjustbox{valign=c}{\includegraphics[width=1.5cm]{fichiers_multimedias/blason_\showacronymemetierauteurb}}	&	\showauteurb \\
+\adjustbox{valign=c}{\includegraphics[width=1.5cm]{fichiers_multimedias/blason_\showacronymemetierauteurc}}	&	\showauteurc \\
+\adjustbox{valign=c}{\includegraphics[width=1.5cm]{fichiers_multimedias/blason_\showacronymemetierauteurd}}	&	\showauteurd \\
+\end{tabularx}
+
+\vfill
+\begin{flushleft}
+	\sffamily\bfseries\large\ Édition \the\year.\the\month
+\end{flushleft}
+\vfill
+%--------------------------------------
+%pied de page Compagnon
+%--------------------------------------
+
+\begin{tikzpicture}[remember picture, overlay]
+	\begin{scope}[shift={(current page.south west)}]
+		\draw (2.5,0.5)
+		node [above right]{\includegraphics{fichiers_multimedias/pied_page_compagnons.png}};
+	\end{scope}
+\end{tikzpicture}
+
+\endgroup
+\null\clearpage}
+
+
+% Finally, we'll use \endinput to indicate that LaTeX can stop reading this file. LaTeX will ignore anything after this line.
+\endinput
