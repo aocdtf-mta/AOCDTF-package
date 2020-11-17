@@ -1,0 +1,138 @@
+%--------------------------------------
+%CANEVAS
+%--------------------------------------
+
+%--------------------------------------
+%appel de la classe de document et de ses options
+%--------------------------------------
+
+\documentclass[a4paper, 11pt, twoside, fleqn]{memoir}
+
+\usepackage{AOCDTF}
+
+%--------------------------------------
+%données du document
+%--------------------------------------
+
+\corpsdemetier{Corps de métier}
+\acronymemetier{choix}
+
+\formation{Formation}
+\matiere{Charte graphique compagnon}
+\cours{Receuil de programmations types}
+
+\auteura{Nom}{Prénom}
+\acronymemetierauteura{choix}
+\auteurb{Nom}{Prénom}
+\acronymemetierauteurb{choix}
+\auteurc{Nom}{Prénom}
+\acronymemetierauteurc{choix}
+\auteurd{Nom}{Prénom}
+\acronymemetierauteurd{choix}
+
+\decoupagechapitre{5} %espacement des marqueurs entre les différents chapitres (à régler en fin de rédaction) (5cm vaut un espacement équivalement à la hauteur du marqueur, une page ne peut en contenir que 5 avec cet espacement-la mais il est le plus équilibré)
+
+%--------------------------------------
+%corps du document
+%--------------------------------------
+
+\begin{document} %corps du document
+
+%--------------------------------------
+%préface, page de couverture, table des matières...
+%--------------------------------------
+
+\frontmatter
+	
+\Framefalse %défini la booléenne Frame comme faux
+	
+	%--------------------------------------
+	%page de couverture et de titre
+	%--------------------------------------
+
+\pagecouverture
+\pagetitre
+\marqueurchapitre
+
+	\pagestyle{plain} %style de page avec en-tête et pied-de-page
+	\pagenumbering{roman}
+	\openany
+	
+	%--------------------------------------
+	%listes de contenus
+	%--------------------------------------
+	
+	{\hypersetup{linkcolor=black}\tableofcontents} %table des matières en noir
+	\newpage
+	{\hypersetup{linkcolor=black}\listoftables} %liste des tableaux en noir
+	\newpage
+	{\hypersetup{linkcolor=black}\listoffigures} %liste des figures en noir
+	{\hypersetup{linkcolor=black}\listtheoremname\listtheorems{formule}} %liste des équations en noir
+	{\hypersetup{linkcolor=black}\listdefinitionname\listtheorems{definition}} %liste des définitions en noir
+	{\hypersetup{linkcolor=black}\listexemplename\listtheorems{exemple}} %liste des définitions en noir
+
+	\openright %début de chapitre à "droite" mais comme demarrage de la numérotation inversé avec la page de titre, ça décale l'ouverture des chapitre à gauche
+
+	%--------------------------------------
+	%chapitre d'introduction
+	%--------------------------------------
+
+	\input{chap_preface}
+		
+%--------------------------------------
+%corps de texte, annexes
+%--------------------------------------
+
+\mainmatter
+
+\Frametrue %défini la booléenne Frame comme vrai -> marqueurs de chapitre
+
+	%--------------------------------------
+	%inclusion des chapitres
+	%--------------------------------------
+
+\input{chap_premier_chapitre}
+
+\input{chap_deuxieme_chapitre}
+
+\input{chap_troisieme_chapitre}
+
+	%--------------------------------------
+	%style des annexes
+	%--------------------------------------
+
+	\Framefalse %défini la booléenne Frame comme false -> pas de marqueurs de chapitre
+	\appendix %appel des annexes
+	\appendixpage
+
+	%--------------------------------------
+	%inclusion des chapitres
+	%--------------------------------------
+
+	\input{ann_premiere_annexe}
+	
+	\input{ann_deuxieme_annexe}
+
+
+%--------------------------------------
+%conclusion, bibliographie
+%--------------------------------------
+
+\backmatter
+
+	%--------------------------------------
+	%inclusion des chapitres
+	%--------------------------------------
+
+	\input{chap_conclusion}
+
+	%--------------------------------------
+	%bibliographie
+	%--------------------------------------
+
+	\nocite{AuteurAnnee, Site:abreviation}
+	
+	\printbibliography %ajout des références bibliographiques
+		
+\end{document}
+
