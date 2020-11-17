@@ -1,8 +1,12 @@
-## Package AOCDTF
+## Package AOCDTF <img src="fichiers_github/logo_compagnons.png" align="right" height="45"/>
 
 LaTeX package for template to AOCDTF's educational content.
 
 Ce dépôt contient les packages LaTeX nécessaire à la bonne compilation du template AOCDTF, dont les packages propriétaitres AOCDTF et AOCDTF_diaporama. Il s'agit de packages destinés à contenir les paramètrages précis du template AOCDTF. Ce dépôt a pour fonction de tenir aisément à jour les packages spécifiques au template AOCDTF.
+
+| Page de couverture  | Page de titre | Page de titre du diaporama |
+| :------------------: | :------------------: | :------------------: |
+| ![Page de couverture](fichiers_github/AOCDTF_page_couverture.png) | ![Page de titre](fichiers_github/AOCDTF_page_titre.png) |![Page de titre du diaporama](fichiers_github/AOCDTF_diaporama_page_titre.png) |
 
 ## Etapes à effectuer
 
