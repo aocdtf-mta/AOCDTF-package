@@ -2,7 +2,7 @@
 \NeedsTeXFormat{LaTeX2e}
 
 % Provide the name of your page, the date it was last updated, and a comment about what it's used for
-\ProvidesPackage{AOCDTF}
+\ProvidesPackage{AOCDTF-cnam}
 
 %--------------------------------------
 %PREAMBULE COMMUN A TOUS LES COURS - A MODIFIER AVEC PRUDENCE
@@ -99,7 +99,7 @@
 
 \AtEndDocument{\label{lastpage}}
 
-\makeatletter 
+\makeatletter
 \setlength{\@fptop}{0pt}
 \makeatother
 
@@ -603,8 +603,7 @@
 %programmations spécifiques de mise-en-pages adaptables selon les matières et les cours
 %--------------------------------------
 
-\usepackage{AOCDTF_couverture}
-\usepackage{AOCDTF_titre}
+\usepackage{AOCDTF-cnam_titre}
 \usepackage{AOCDTF_marqueurchapitre}
 
 % Finally, we'll use \endinput to indicate that LaTeX can stop reading this file. LaTeX will ignore anything after this line.
