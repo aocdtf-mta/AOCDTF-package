@@ -35,6 +35,6 @@ Voici une [documentation](https://vigou3.github.io/formation-latex-ul/) ultra-co
 2. Importer le dépôt AOCDTF-package à l'aide de GitKraken dans l'emplacement des packages de la distribution TexLive :
 `texlive/2020/texmf-dist/tex/latex` et ne pas oublier de mettre à jour la base de données des packages. Se référer aux instructions sur cette [page](https://latex.developpez.com/faq/?page=LaTeX-avance#Comment-installer-un-package-LaTeX), section _Comment installer un package LaTeX ?_ 
 
-3. Retourner sur le [wiki](https://github.com/aocdtf-mta/AOCDTF-template/wiki) du dépôt du canevas graphique AOCDTF pour la suite de l'installation et de la prise en main de l'environnement logiciel
+3. Retourner sur le [wiki](https://github.com/aocdtf-mta/AOCDTF-template/wiki) du dépôt du canevas graphique AOCDTF pour la suite de l'installation et de la prise en main de l'environnement logiciel.
 
 4. Si des modifications sont à ajouter au package AOCDTF ou au canevas, **consulter** l'équipe pour qu'on exporter ajouter ces modifications.
