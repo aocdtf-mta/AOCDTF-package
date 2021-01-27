@@ -23,9 +23,9 @@ Divers documents de tutoriel pour tous les niveaux sont disponibles sur internet
  - LaTeX avec la distribution [TexLive](https://www.tug.org/texlive/)
  - Editeur [Texmaker](https://www.xm1math.net/texmaker/index_fr.html)
 
-Voici une [documentation](https://vigou3.github.io/formation-latex-ul/) ultra-complète de l'université de Laval servant également pour la mise en route des outils
+Voici une [documentation](https://vigou3.github.io/formation-latex-ul/) ultra-complète de l'université de Laval servant également pour la mise en route des outils avec des vidéos explicatives sur Mac os X et Windows
  
- - Gestionnaire de dépôt [GitKraken](https://www.gitkraken.com)
+ - Gestionnaire de dépôt Git [GitKraken](https://www.gitkraken.com)
  - S'inscrire sur le site d'éditeur de dessin SVG (dessin vectoriel importable dans LaTeX) [Draw](https://www.draw.io)
  - Programme de gestion des bibliographie [Biber](http://biblatex-biber.sourceforge.net)
  - Editeur d'image en format vectoriel [Inkscape](https://inkscape.org/fr/)
