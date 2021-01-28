@@ -11,9 +11,9 @@ Ce dépôt contient les packages LaTeX nécessaire à la bonne compilation du te
 # Etapes à effectuer
 
 1. Maitriser les bases de la programmation sous l'environnement LaTeX et se familiariser avec le langage de versionnage Git :
-- `commit/push` pour exporter en ligne les modifications dans une branche à son prenom_nom.
-- `merge` pour intégrer ses modifications dans la branche "master"
-- `pull` pour importer les modifications de la branche "master" (ou autre) depuis le dépôt Github
+- `commit & push` pour exporter en ligne les modifications dans une branche à son prenom_nom.
+- `merge` pour intégrer ses modifications locales dans la branche "master"
+- `pull` pour importer les modifications de la branche "master" (ou autre) depuis le dépôt Github vers un stockage local
 
 Divers documents de tutoriel pour tous les niveaux sont disponibles sur internet, avec entre autre : 
 - [cours Openclassrooms](https://openclassrooms.com/fr/courses/5641721-utilisez-git-et-github-pour-vos-projets-de-developpement)
