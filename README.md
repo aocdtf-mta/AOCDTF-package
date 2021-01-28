@@ -19,7 +19,7 @@ Divers documents de tutoriel pour tous les niveaux sont disponibles sur internet
 - [cours Openclassrooms](https://openclassrooms.com/fr/courses/5641721-utilisez-git-et-github-pour-vos-projets-de-developpement)
 - tutoriel vidéo sur [Git et GitHub](https://www.youtube.com/watch?v=hPfgekYUKgk)
 
-2. Importer le dépôt AOCDTF-package à l'aide de GitKraken dans l'emplacement dédiés aux packages de la distribution TexLive.Pour ce faire, se référer aux instructions sur cette [page](https://fr.wikibooks.org/wiki/LaTeX/Installer_LaTeX), section _Installer des extensions supplémentaires_ .
+2. Cloner le dépôt AOCDTF-package à l'aide de GitKraken dans l'emplacement dédiés aux packages de la distribution TexLive. Pour ce faire, se référer aux instructions sur cette [page](https://fr.wikibooks.org/wiki/LaTeX/Installer_LaTeX), section _Installer des extensions supplémentaires_ .
 
 3. Retourner sur le [wiki](https://github.com/aocdtf-mta/AOCDTF-template/wiki) du dépôt du canevas AOCDTF pour la suite de l'installation et de la prise en main de l'environnement logiciel LaTeX.
 
