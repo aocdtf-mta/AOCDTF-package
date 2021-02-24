@@ -9,6 +9,74 @@
 %--------------------------------------
 
 	%--------------------------------------
+	%Inclusion de vidéos encapsulées
+	%--------------------------------------
+
+\usepackage[bigfiles]{pdfbase}
+\ExplSyntaxOn
+\cs_new:Npn\embedvideo#1#2{
+  \leavevmode
+  \pbs_pdfobj:nnn{}{fstream}{{}{#2}}
+  \pbs_pdfobj:nnn{}{dict}{
+    /Type/Filespec/F~(#2)/UF~(#2)
+    /EF~<</F~\pbs_pdflastobj:>>
+  }
+  \tl_set:Nx\video{\pbs_pdflastobj:}%
+  %
+  \pbs_pdfobj:nnn{}{dict}{
+    /Type/RichMediaInstance/Subtype/Video
+    /Asset~\video
+    /Params~<</Binding/Foreground>>
+  }
+  %
+  \pbs_pdfobj:nnn{}{dict}{
+    /Type/RichMediaConfiguration/Subtype/Video
+    /Instances~[\pbs_pdflastobj:]
+  }
+  %
+  \pbs_pdfobj:nnn{}{dict}{
+    /Type/RichMediaContent
+    /Assets~<<
+      /Names~[(#2)~\video]
+    >>
+    /Configurations~[\pbs_pdflastobj:]
+  }
+  \tl_set:Nx\rmcontent{\pbs_pdflastobj:}%
+  %
+  \pbs_pdfobj:nnn{}{dict}{
+    /Activation~<<
+      /Condition/XA
+      /Presentation~<<
+        /Transparent~true
+        /Style/Embedded
+        /PassContextClick~true
+      >>
+    >>
+    /Deactivation~<</Condition/PC>>
+  }
+  %
+  \hbox_set:Nn\l_tmpa_box{#1}
+  \tl_set:Nx\l_box_wd_tl{\dim_use:N\box_wd:N\l_tmpa_box}
+  \tl_set:Nx\l_box_ht_tl{\dim_use:N\box_ht:N\l_tmpa_box}
+  \tl_set:Nx\l_box_dp_tl{\dim_use:N\box_dp:N\l_tmpa_box}
+  \pbs_pdfxform:nnnnn{1}{1}{}{}{\l_tmpa_box}
+  %
+  \pbs_pdfannot:nnnn{\l_box_wd_tl}{\l_box_ht_tl}{\l_box_dp_tl}{
+    /Subtype/RichMedia
+    /BS~<</W~0/S/S>>
+    /Contents~(embedded~video~file:#2)
+    /NM~(rma:#2)
+    /AP~<</N~\pbs_pdflastxform:>>
+    /RichMediaSettings~\pbs_pdflastobj:
+    /RichMediaContent~\rmcontent
+  }
+  \phantom{#1}
+}%
+\ExplSyntaxOff
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+	%--------------------------------------
 	%Packages pour le document
 	%--------------------------------------
 
@@ -19,35 +87,40 @@
 	\usepackage[svg, table, svgnames, dvipsnames, x11names]{xcolor} %gestion des couleurs
 	\usepackage[bookmarksnumbered=false, breaklinks, linktoc=all]{hyperref} %référençage
 	\usepackage{varioref, memhfixc, url, hypbmsec, bookmark, tocloft, xsim, mVersion} % amélioration du référencage
-	\usepackage{pict2e, picture, multicol, pdflscape, graphicx, eso-pic, preview, graphbox, wrapfig, svg-extract}
+	\usepackage{pict2e, picture, multicol, pdflscape, graphicx, eso-pic, preview, graphbox, wrapfig, svg-extract, smoothpic}
 	\usepackage{callouts, circledsteps} %annotation d'image
 	\usepackage[absolute]{textpos}  % disposition d'images
 	\usepackage{authblk, tocbibind, calc, mdframed, ragged2e, lastpage, paralist} %gestion mise en page
-	\usepackage{xifthen, multido, etoolbox, ifpdf} %appel de fonction conditionnelles\\
-	\usepackage[hyperref, thref]{ntheorem}
-	\usepackage{amsmath, thmtools,newtxmath, mathtools, amsfonts, amssymb, mathrsfs, wasysym} %écriture des mathématiques avec référénces
+	\usepackage{ifthen, xifthen, multido, etoolbox, ifpdf} %appel de fonction conditionnelles\\
+	\usepackage{shadethm, amsmath,newtxmath, mathtools, amsfonts, amssymb, mathrsfs, wasysym} %écriture des mathématiques avec référénces
 	\usepackage{chemfig, bohr, tikzorbital, chemgreek, expl3, xparse, l3keys2e, xargs} %gestion de l'écriture en chimie
 	\usepackage[version=4]{mhchem}
 	\usepackage{modiagram} %orbitale atomique
 	\usepackage{cancel, colortbl, soul} %packages nécessaires pour le chargement du package SIunitx
 	\usepackage{siunitx, xfrac} %gestion des unités de physique
 	\usepackage[export]{adjustbox}
+	\usepackage{tcolorbox} 
+	\usepackage[pdf]{pstricks}
 	\usepackage{animate, multimedia, media9} %animation d'image
 	\usepackage{subcaption, capt-of} %gestion des sous-figures et des légendes communes
 	\usepackage{enumitem} %mise en page type code informatique et listes
-	\usepackage{verbatim, fancyvrb} %mise en page type code informatique et listes
+	\usepackage{verbatim, fancyvrb, listings, cprotect} %mise en page type code informatique et listes
 	\usepackage{rotating, mdframed} %rotation
 	\usepackage[scale=1,angle=0,opacity=1,contents={}]{background} %gestion de l'arrière-plan 
 	\usepackage{xspace, xpatch, letltxmacro} %macros de luxe
 	\usepackage{pgf, pgfplots}
 	\usepackage{tikz, tikz-qtree, pgfcalendar, pgfgantt, pgfplotstable, schemabloc} %création de figures et schémas
+	\usepackage[edges]{forest}
 	\usepackage{pdfpages, scrbase} %inclusion des PDF
 	\usepackage{array, xstring, multirow, booktabs, makecell, longtable, arydshln, xltabular, xtab, tabu} %gestion fine des tableaux (sans \ltablex !)
 	\usepackage[siunitx, european, RPvoltages]{circuitikz}%création de schémas électriques
 	\usepackage{threeparttable} %notes dans tableaux
 	\usepackage{fontawesome, tikzsymbols} %liste de logo (CHECK LA DOC http://tug.ctan.org/info/symbols/comprehensive/symbols-a4.pdf)
 	\usepackage[section]{placeins} %force les figures à rester dans leur section
-	\usepackage{impnattypo} %règle de typographie française
+	\usepackage{impnattypo, varwidth} %règle de typographie française
+	\usepackage[amsmath, hyperref, thref, framed]{ntheorem}
+	\usepackage{tcolorbox, thmtools}
+	\usepackage{morewrites}
 	\let\newfloat\undefined\usepackage{floatrow} %nouvel environnement flottant
 
 		%--------------------------------------
@@ -64,22 +137,53 @@
 
 	\usepackage[backend=biber, style=numeric, hyperref=auto, citestyle=numeric-comp, autopunct=false]{biblatex}
 	\usepackage{biblatex-anonymous}
-	\usepackage{csquotes}
+	\usepackage[autostyle]{csquotes}
+	\usepackage[font=itshape]{quoting}
+	\usepackage[left = \flqq{},right = \frqq{},leftsub = \flq{},rightsub = \frq{}]{dirtytalk}
 	
 	%--------------------------------------
 	%Pramètrage de la bibliographie
 	%--------------------------------------
 	
-	%\DefineBibliographyStrings{french}{in={dans},inseries={dans}}
+	\DefineBibliographyStrings{french}{in={dans},inseries={dans}}
 
 	\NewBibliographyString{chapitre}
 	\DefineBibliographyStrings{french}{chapitre = {Chap.},}
+	
+	\DeclareCiteCommand{\ppracite}
+  {\usebibmacro{prenote}}
+  {\ifciteindex
+     {\indexfield{indextitle}}
+     {}%
+   \printfield[citetitle]{labeltitle}%
+   \setunit{\addspace}%
+   \printtext[parens]{\usebibmacro{cite}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+\NewBibliographyString{pprby}
+\DefineBibliographyStrings{french}{pprby = {de}}
+
+\DeclareCiteCommand{\pprbcite}
+  {\usebibmacro{prenote}}
+  {\ifciteindex
+     {\indexfield{indextitle}}
+     {}%
+   \printfield[citetitle]{labeltitle}%
+   \setunit{\addspace}%
+   \bibstring{pprby}%
+   \setunit{\addspace}%
+   \printnames{labelname}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
 
 %--------------------------------------
 %paramétrage des packages pour le document
 %--------------------------------------
 
 %\frenchbsetup{StandardLists=true} %liste au format français
+
+\tcbuselibrary{breakable, theorems, skins, xparse}
 
 \hypersetup{colorlinks = true, urlcolor = Blue, citecolor = Red, linkcolor = ForestGreen}
 
@@ -95,7 +199,10 @@
 	range-units=single,  % Cache l'unité sur la première borne
 	parse-numbers = false,
 	}
-	
+
+\DeclareSIUnit\force{f}
+\DeclareSIUnit\bit{bit}	
+
 \floatsetup[table]{capposition=top}
 
 \AtEndDocument{\label{lastpage}}
@@ -124,8 +231,13 @@
 	\usetikzlibrary{matrix}
 	\usetikzlibrary{intersections}
 	\usetikzlibrary{decorations, decorations.pathmorphing, decorations.pathreplacing, decorations.shapes, decorations.text, decorations.markings, decorations.fractals, decorations.footprints, svg.path} 
-		
-	\tikzset{mynode/.style={draw=black, solid, circle, fill=white, inner sep=2pt, thick, text=black}} %pastille d'annotation
+			
+	\tikzset{->-/.style={decoration={
+  markings,
+  mark=at position #1 with {\arrow{>}}},postaction={decorate}}}
+		\tikzset{-<-/.style={decoration={
+  markings,
+  mark=at position #1 with {\arrow{<}}},postaction={decorate}}}
 	
 	\tikzset{lightning bolt to/.style={to path={
 		let \p1=(\tikztostart), \p2=(\tikztotarget), \n1={veclen(\y2-\y1,\x2-\x1)} in
@@ -181,6 +293,13 @@
   	markings, mark=at position .5 with {\arrow[#1]{stealth}}}}},
 }
 		
+		\forestset{
+  direction switch/.style={
+    for tree={edge+=thick, font=\sffamily},
+    where level>=1{folder, grow'=0}{for children=forked edge},
+    where level=3{}{draw},
+  },
+}
 		%--------------------------------------
 		%grille d'aide au placement des éléments
 		%--------------------------------------
@@ -286,7 +405,16 @@
 
 \newcommand{\decoupagechapitre}[1]{\def\@decoupagechapitre{#1}}
 \newcommand{\showdecoupagechapitre}{\@decoupagechapitre}
+
+\newcommand{\typemedia}[1]{\def\@typemedia{#1}}
+\newcommand{\thetypemedia}{\@typemedia}
 \makeatother
+
+\newcommand{\media}[3]{%
+    \IfEqCase{#1}{%
+        {paper}{#2}%
+        {screen}{#3}}}%
+
 
 \newcommand{\discolorlinks}[1]{{\hypersetup{hidelinks}#1}}
 
@@ -312,6 +440,40 @@
   }%
 }
 \newcommand{\mathdirectcurrent}{\mathrel{\textdirectcurrent}}
+
+\newcommand*{\siecle}[1]{%
+\ifnum#1=1%
+\bsc{\romannumeral #1}\textsuperscript{er}~siècle%
+\else%
+\bsc{\romannumeral #1}\textsuperscript{e}~siècle%
+\fi}
+ 
+\newcommand*{\siecles}[2]{%
+\bsc{\romannumeral #1} - %
+\bsc{\romannumeral #2}\textsuperscript{e}~siècles\%
+}
+
+\newcommand*{\millenaire}[1]{%
+\ifnum#1=1%
+\bsc{\romannumeral #1}\textsuperscript{er}~millénaire%
+\else%
+\bsc{\romannumeral #1}\textsuperscript{e}~millénaire%
+\fi}
+
+
+\newcommand*{\millenaires}[2]{%
+\bsc{\romannumeral #1} - %
+\bsc{\romannumeral #2}\textsuperscript{e}~millénaires\%
+}
+
+\newcommand{\apjc}{apr. J.-C.\xspace}
+\newcommand{\avjc}{av. J.-C.\xspace}
+
+\makeatletter
+\def\minus@test{-}
+\def\annee#1{\xannee#1\@nul}
+\def\xannee#1#2\@nul{\def\first@arg{#1}\ifx\first@arg\minus@test{an~$#2$ (avant J.C.)}\else{an~\first@arg#2}\fi}
+\makeatother
 
 	%--------------------------------------
 	%redéfinition des noms
@@ -353,8 +515,8 @@
 	\newcolumntype{J}{>{$}C<{$}}	%nouvelle colonne de type J qui insère automatiquement un environnement mathématique au centre avec largeur automatique
 	\newcolumntype{K}{>{$}R<{$}} %nouvelle colonne de type K qui insère automatiquement un environnement mathématique à droite avec largeur automatique
 	
-	\newcolumntype{O}{k@{${\enspace{}}={\enspace{}}$}i} %nouvelle colonne de type M qui combine deux colonnes (d et g) pour pouvoir aligner le signe = dans un tableau
-	\newcolumntype{Q}{K@{${\enspace{}}={\enspace{}}$}I} %nouvelle colonne de type M qui combine deux colonnes (d et g) pour pouvoir aligner le signe = dans un tableau
+	\newcolumntype{O}{k@{${\enspace{}}={\enspace{}}$}i} %nouvelle colonne de type O qui combine deux colonnes (d et g) pour pouvoir aligner le signe = dans un tableau
+	\newcolumntype{Q}{K@{${\enspace{}}={\enspace{}}$}I} %nouvelle colonne de type Q qui combine deux colonnes (d et g) pour pouvoir aligner le signe = dans un tableau
 
 	\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}} %nouvelle colonne de type P qui centre horizontalement des colonnes avec une largeur définie de type p (pratique avec les long titres de colonnes) 
 	\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}} %nouvelle colonne de type P qui centre horizontalement des colonnes avec une largeur définie de type m (pratique avec les long titres de colonnes) 
@@ -384,16 +546,24 @@
   	\LetLtxMacro{\OldSqrt}{\sqrt} %grosse prise de tête pour que la nième racine de trucmuche s'aligne correctement suite à un clash avec le package newtxmath (qui sert au lettrage en grec)
 	\RenewDocumentCommand{\sqrt}{O{} O{1} O{2} m}{\OldSqrt[\leftroot{#2}\uproot{#3}#1]{#4}}%
 
-\newlength{\conditionwd} %environnement de description "muibene" pour les équations et les formules
+\newcommand*{\NLS}{%
+  \par
+  \nobreak
+  \vspace{-\parskip}%
+  \noindent
+  \ignorespaces
+}
+
+	\newlength{\conditionwd} %environnement de description "muibene" pour les équations et les formules
 	\newenvironment{numvariables}
-  		{Avec :\newline\newline\tabularx{\textwidth}[t]{
+  		{Avec :\NLS\tabularx{\textwidth}[t]{
 			j @{${}:\enspace{}$}X r >{$(\enspace{}}l<{\enspace{})$} O}
 			\multicolumn{2}{c}{\thead{Grandeur dans l'ISQ}} & \multicolumn{2}{c}{\thead{Unité SI de mesure}} & \multicolumn{2}{c}{\thead{Valeur}} \\
 			\midrule}	%preambule du tableau à 5 colonnes
 		{\endtabularx\\[\belowdisplayskip]}
 		
 	\newenvironment{textvariables}
-  		{Avec :\newline\newline\tabularx{\textwidth}[t]{
+  		{Avec :\NLS\tabularx{\textwidth}[t]{
 			j @{${}:\enspace{}$}l r >{$(\enspace{}}l<{\enspace{})$} X}
 			\multicolumn{2}{c}{\thead{Grandeur dans l'ISQ}} & \multicolumn{2}{c}{\thead{Unité SI de mesure}} & \thead{Description} \\
 			\midrule}	%preambule du tableau à 5 colonnes
@@ -403,16 +573,47 @@
 
 		%--------------------------------------
 		%Listes théorèmes/style
-		%--------------------------------------
-
-		\newtheorem{formule}{Formule}[chapter]
-		\renewcommand*{\listtheoremname}{\chapter*{Liste des formules}}
-
-		\newtheorem{definition}{Définition}[chapter]
-		\newcommand*{\listdefinitionname}{\chapter*{Liste des définitions}}
-
-		\newtheorem{exemple}{Exemple}[chapter]
-		\newcommand*{\listexemplename}{\chapter*{Liste des exemples}}
+		%--------------------------------------		
+		
+		\newtcbtheorem[number within=chapter, list inside=dfn]{definition}{Définition}
+		{breakable, 
+		enhanced,
+		frame empty,
+		fonttitle=\bfseries,
+		colframe=red!50!white, 
+		coltitle=red!50!black,
+		 colbacktitle=red!15!white, 
+		 borderline={0.5mm}{0mm}{red!15!white},
+		 attach boxed title to top left={yshift=-2mm, xshift=2mm}, 
+		 boxed title style={boxrule=0.4pt},
+		 varwidth boxed title}{def}
+		
+		\newtcbtheorem[number within=chapter, list inside=frm]{formule}{Formule}
+		{breakable, 
+		enhanced,
+		frame empty,
+		fonttitle=\bfseries,
+		colframe=ForestGreen!50!white, 
+		coltitle=ForestGreen!50!black,
+		colbacktitle=ForestGreen!15!white, 
+		borderline={0.5mm}{0mm}{ForestGreen!15!white},
+		attach boxed title to top left={yshift=-2mm, xshift=2mm}, 
+		boxed title style={boxrule=0.4pt},
+		varwidth boxed title}{form}
+		
+		\newtcbtheorem[number within=chapter, list inside=xmpl]{exemple}{Exemple}
+		{breakable, 
+		enhanced,
+		frame empty,
+		fonttitle=\bfseries,
+		colframe=blue!50!white, 
+		coltitle=blue!50!black,
+		 colbacktitle=blue!15!white, 
+		 borderline={0.5mm}{0mm}{blue!15!white},
+		 attach boxed title to top left={yshift=-2mm, xshift=2mm}, 
+		 boxed title style={boxrule=0.4pt},
+		 varwidth boxed title}{ex}
+			
 
 	%--------------------------------------
 	%macros pour les listes
@@ -464,6 +665,9 @@
 
 	\newif\ifFrame %instruction conditionnelle pour les couleurs des pages
 	\Frametrue
+
+	\newif\ifformation %instruction conditionnelle pour les l'inclusion d'une image dans le titre
+	\formationtrue
 
 	%--------------------------------------
 	%Marges
@@ -567,31 +771,41 @@
   	  \setlength{\beforechapskip}{0pt}
  	\renewcommand\printchapternum{}
   	\renewcommand\printchaptertitle[1]{
-  	  		\if@mainmatter
-    \begin{tabularx}{\linewidth}{@{}l @{\quad} c @{\quad} >{\raggedright\arraybackslash} X@{}}
-    \raisebox{-0.93\height}{\bfseries\sffamily\small\MakeUppercase \@chapapp} & 
-    \if\inappendix %instruction conditionelle pour savoir si on se situe dans les annexes ou pas (grosse prise de tête)
-		\multirow{2}{*}{\raisebox{-0.99\height}{\resizebox{31,5pt}{!}{{\mdseries\sffamily \thechapter}}}}
-		\else
-		\ifnum\value{chapter}>9
-    		\multirow{2}{*}{\raisebox{-1.02\height}{\resizebox{48pt}{!}{{\mdseries\sffamily \thechapter}}}}
-    		\else
-		\multirow{2}{*}{\raisebox{-1\height}{\resizebox{24,3pt}{!}{{\mdseries\sffamily \thechapter}}}}
-		\fi
-		\fi & \hrule depth 1pt \\
-     &  &  \Huge\sffamily\bfseries\discolorlinks{##1}
-  	\end{tabularx}
-    \vspace{0.5cm}
-	\hrule depth 1pt
-  	\else
-    \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash} X@{}}
-    \hrule depth 1pt
-  	\vspace{0.5cm}
-   	\Huge\sffamily\bfseries\discolorlinks{##1}
-	\vspace{0.5cm}
-	\hrule depth 1pt
-  	\end{tabularx}
-  	\fi}}
+  	  	\if@mainmatter
+			\ifnum\value{chapter}<1
+    			\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash} X@{}}
+  			\hrule depth 1pt
+  			\vspace{0.5cm}
+   			\Huge\sffamily\bfseries\discolorlinks{##1}
+			\vspace{0.5cm}
+			\hrule depth 1pt
+  			\end{tabularx}
+  			\else
+   			\begin{tabularx}{\linewidth}{@{}l @{\quad} c @{\quad} >{\raggedright\arraybackslash} X@{}}
+    			\raisebox{-0.93\height}{\bfseries\sffamily\small\MakeUppercase \@chapapp} & 
+    				\if\inappendix %instruction conditionelle pour savoir si on se situe dans les annexes ou pas (grosse prise de tête)
+				\multirow{2}{*}{\raisebox{-0.99\height}{\resizebox{31,5pt}{!}{{\mdseries\sffamily \thechapter}}}}
+				\else
+					\ifnum\value{chapter}>9
+    					\multirow{2}{*}{\raisebox{-1.02\height}{\resizebox{48pt}{!}{{\mdseries\sffamily \thechapter}}}}
+    					\else
+					\multirow{2}{*}{\raisebox{-1\height}{\resizebox{24,3pt}{!}{{\mdseries\sffamily \thechapter}}}}
+					\fi
+				\fi & \hrule depth 1pt \\
+     		&  &  \Huge\sffamily\bfseries\discolorlinks{##1}
+  			\end{tabularx}
+    			\vspace{0.5cm}
+			\hrule depth 1pt
+			\fi
+  		\else
+    		\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash} X@{}}
+  		\hrule depth 1pt
+  		\vspace{0.5cm}
+   		\Huge\sffamily\bfseries\discolorlinks{##1}
+		\vspace{0.5cm}
+		\hrule depth 1pt
+  		\end{tabularx}
+  		\fi}}
 	
 	\makeatother
 		

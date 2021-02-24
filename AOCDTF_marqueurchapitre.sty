@@ -4,10 +4,6 @@
 % Provide the name of your page, the date it was last updated, and a comment about what it's used for
 \ProvidesPackage{AOCDTF_marqueurchapitre}
 
-%--------------------------------------
-%Page de couverture
-%--------------------------------------
-
 \newcommand{\marqueurchapitre}{
 
 \newcommand\BoxColor{\ifcase\thechapshift blue!30\or brown!30\or pink!30\or cyan!30\or green!30\or teal!30\or purple!30\or red!30\or olive!30\or orange!30\or lime!30\or gray!\or magenta!30\else yellow!30\fi} %définition de la couleur des marqueurs de chapitre
@@ -17,6 +13,7 @@
 
 \pagestyle{plain}
 
+\media{\thetypemedia}{ 
 % the main command; the mandatory argument sets the color of the vertical box
 \newcommand\ChapFrame{%
 \AddEverypageHook{%
@@ -62,6 +59,34 @@
   \fi%
 }%
   \stepcounter{chapshift}
+}}{
+% the main command; the mandatory argument sets the color of the vertical box
+\newcommand\ChapFrame{%
+\AddEverypageHook{%
+\ifFrame
+  \backgroundsetup{contents={%
+  \begin{tikzpicture}[overlay,remember picture]
+  \node[
+  	rounded corners=3pt,
+    fill=\BoxColor,
+    inner sep=0pt,
+    rectangle,
+    text width=1.5cm,
+    text height=5.5cm,
+    align=center,
+    anchor=north west
+  ] 
+  at ($ (current page.north west) + (-0cm,-\showdecoupagechapitre*\thechapshift cm) $) %nombre négatif = espacement des marqueurs entre les différents chapitres (à régler en fin de rédaction) (5cm vaut un espacement équivalement à la hauteur du marqueur, une page peut en contenir 5 avec cet espacement-la mais il est le plus équilibré)
+    {\rotatebox{90}{\hspace*{.5cm}%
+      \parbox[c][1.2cm][t]{5cm}{%
+        \raggedright\textcolor{black}{\sffamily\textbf{\leftmark}}}}};
+  \end{tikzpicture}}}
+  \BgMaterial%
+  \else
+  \fi%
+}%
+  \stepcounter{chapshift}
+}
 }} %redéfinition du marqueur de chapitre pour ne contenir que le titre du chapitre
 
 % Finally, we'll use \endinput to indicate that LaTeX can stop reading this file. LaTeX will ignore anything after this line.

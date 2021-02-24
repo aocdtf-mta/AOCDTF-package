@@ -9,6 +9,74 @@
 %--------------------------------------
 
 	%--------------------------------------
+	%Inclusion de vidéos encapsulées
+	%--------------------------------------
+
+\usepackage[bigfiles]{pdfbase}
+\ExplSyntaxOn
+\cs_new:Npn\embedvideo#1#2{
+  \leavevmode
+  \pbs_pdfobj:nnn{}{fstream}{{}{#2}}
+  \pbs_pdfobj:nnn{}{dict}{
+    /Type/Filespec/F~(#2)/UF~(#2)
+    /EF~<</F~\pbs_pdflastobj:>>
+  }
+  \tl_set:Nx\video{\pbs_pdflastobj:}%
+  %
+  \pbs_pdfobj:nnn{}{dict}{
+    /Type/RichMediaInstance/Subtype/Video
+    /Asset~\video
+    /Params~<</Binding/Foreground>>
+  }
+  %
+  \pbs_pdfobj:nnn{}{dict}{
+    /Type/RichMediaConfiguration/Subtype/Video
+    /Instances~[\pbs_pdflastobj:]
+  }
+  %
+  \pbs_pdfobj:nnn{}{dict}{
+    /Type/RichMediaContent
+    /Assets~<<
+      /Names~[(#2)~\video]
+    >>
+    /Configurations~[\pbs_pdflastobj:]
+  }
+  \tl_set:Nx\rmcontent{\pbs_pdflastobj:}%
+  %
+  \pbs_pdfobj:nnn{}{dict}{
+    /Activation~<<
+      /Condition/XA
+      /Presentation~<<
+        /Transparent~true
+        /Style/Embedded
+        /PassContextClick~true
+      >>
+    >>
+    /Deactivation~<</Condition/PC>>
+  }
+  %
+  \hbox_set:Nn\l_tmpa_box{#1}
+  \tl_set:Nx\l_box_wd_tl{\dim_use:N\box_wd:N\l_tmpa_box}
+  \tl_set:Nx\l_box_ht_tl{\dim_use:N\box_ht:N\l_tmpa_box}
+  \tl_set:Nx\l_box_dp_tl{\dim_use:N\box_dp:N\l_tmpa_box}
+  \pbs_pdfxform:nnnnn{1}{1}{}{}{\l_tmpa_box}
+  %
+  \pbs_pdfannot:nnnn{\l_box_wd_tl}{\l_box_ht_tl}{\l_box_dp_tl}{
+    /Subtype/RichMedia
+    /BS~<</W~0/S/S>>
+    /Contents~(embedded~video~file:#2)
+    /NM~(rma:#2)
+    /AP~<</N~\pbs_pdflastxform:>>
+    /RichMediaSettings~\pbs_pdflastobj:
+    /RichMediaContent~\rmcontent
+  }
+  \phantom{#1}
+}%
+\ExplSyntaxOff
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+	%--------------------------------------
 	%Packages pour le document
 	%--------------------------------------
 
@@ -19,35 +87,40 @@
 	\usepackage[svg, table, svgnames, dvipsnames, x11names]{xcolor} %gestion des couleurs
 	\usepackage[bookmarksnumbered=false, breaklinks, linktoc=all]{hyperref} %référençage
 	\usepackage{varioref, memhfixc, url, hypbmsec, bookmark, tocloft, xsim, mVersion} % amélioration du référencage
-	\usepackage{pict2e, picture, multicol, pdflscape, graphicx, eso-pic, preview, graphbox, wrapfig, svg-extract, transparent}
+	\usepackage{pict2e, picture, multicol, pdflscape, graphicx, eso-pic, preview, graphbox, wrapfig, svg-extract, smoothpic}
 	\usepackage{callouts, circledsteps} %annotation d'image
 	\usepackage[absolute]{textpos}  % disposition d'images
-	\usepackage{authblk, tocbibind, calc, mdframed, ragged2e, lastpage} %gestion mise en page
-	\usepackage{xifthen, multido, etoolbox, ifpdf} %appel de fonction conditionnelles\\
-	\usepackage[hyperref, thref]{ntheorem}
-	\usepackage{thmtools,newtxmath, mathtools, amsfonts, amssymb, mathrsfs, wasysym} %écriture des mathématiques avec référénces
+	\usepackage{authblk, tocbibind, calc, mdframed, ragged2e, lastpage, paralist} %gestion mise en page
+	\usepackage{ifthen, xifthen, multido, etoolbox, ifpdf} %appel de fonction conditionnelles\\
+	\usepackage{shadethm, amsmath,newtxmath, mathtools, amsfonts, amssymb, mathrsfs, wasysym} %écriture des mathématiques avec référénces
 	\usepackage{chemfig, bohr, tikzorbital, chemgreek, expl3, xparse, l3keys2e, xargs} %gestion de l'écriture en chimie
 	\usepackage[version=4]{mhchem}
 	\usepackage{modiagram} %orbitale atomique
 	\usepackage{cancel, colortbl, soul} %packages nécessaires pour le chargement du package SIunitx
 	\usepackage{siunitx, xfrac} %gestion des unités de physique
 	\usepackage[export]{adjustbox}
+	\usepackage{tcolorbox} 
+	\usepackage[pdf]{pstricks}
 	\usepackage{animate, multimedia, media9} %animation d'image
 	\usepackage{subcaption, capt-of} %gestion des sous-figures et des légendes communes
 	\usepackage{enumitem} %mise en page type code informatique et listes
-	\usepackage{verbatim, fancyvrb} %mise en page type code informatique et listes
+	\usepackage{verbatim, fancyvrb, listings, cprotect} %mise en page type code informatique et listes
 	\usepackage{rotating, mdframed} %rotation
 	\usepackage[scale=1,angle=0,opacity=1,contents={}]{background} %gestion de l'arrière-plan 
 	\usepackage{xspace, xpatch, letltxmacro} %macros de luxe
 	\usepackage{pgf, pgfplots}
 	\usepackage{tikz, tikz-qtree, pgfcalendar, pgfgantt, pgfplotstable, schemabloc} %création de figures et schémas
+	\usepackage[edges]{forest}
 	\usepackage{pdfpages, scrbase} %inclusion des PDF
-	\usepackage{xstring, multirow, booktabs, makecell, longtable, arydshln, xltabular, xtab, tabu} %gestion fine des tableaux (sans \ltablex !)
+	\usepackage{array, xstring, multirow, booktabs, makecell, longtable, arydshln, xltabular, xtab, tabu} %gestion fine des tableaux (sans \ltablex !)
 	\usepackage[siunitx, european, RPvoltages]{circuitikz}%création de schémas électriques
 	\usepackage{threeparttable} %notes dans tableaux
 	\usepackage{fontawesome, tikzsymbols} %liste de logo (CHECK LA DOC http://tug.ctan.org/info/symbols/comprehensive/symbols-a4.pdf)
 	\usepackage[section]{placeins} %force les figures à rester dans leur section
-	\usepackage{impnattypo} %règle de typographie française
+	\usepackage{impnattypo, varwidth} %règle de typographie française
+	\usepackage[amsmath, hyperref, thref, framed]{ntheorem}
+	\usepackage{tcolorbox, thmtools}
+	\usepackage{morewrites}
 	\let\newfloat\undefined\usepackage{floatrow} %nouvel environnement flottant
 
 		%--------------------------------------
@@ -282,7 +355,14 @@
 
 \newcommand{\decoupagechapitre}[1]{\def\@decoupagechapitre{#1}}
 \newcommand{\showdecoupagechapitre}{\@decoupagechapitre}
+
+\newcommand{\typemedia}[1]{\def\@typemedia{#1}}
+\newcommand{\thetypemedia}{\@typemedia}
 \makeatother
+
+\newcommand{\tree}[3]{%
+    \ifthenelse{\equal{#1}{paper}}{#2}{%
+    \ifthenelse{\equal{#1}{screen}}{#3}{}}}
 
 \newcommand{\discolorlinks}[1]{{\hypersetup{hidelinks}#1}}
 

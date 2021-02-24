@@ -8,9 +8,7 @@
 %Page de titre
 %--------------------------------------
 \newcommand{\pagetitre}{
-
 \pagestyle{empty}
-\thispagestyle{empty}
 
 \begingroup
 
@@ -22,23 +20,27 @@
 \begin{center}
 \includegraphics[width=6cm]{fichiers_multimedias/logo_compagnons}
 \end{center}
-\vfill
 
 %--------------------------------------
 %formation
 %--------------------------------------
 
+\ifformation
+\vfill
 \begin{center}
 \HRule\\[0.25cm]
 \Large\sffamily\textbf{{\MakeTextUppercase{\showformation}}}\\
 \HRule
 \end{center}
+\vfill
+\else
+\vfill
+\fi
 
 %--------------------------------------
 %titre de la page
 %--------------------------------------
 
-\vfill
 \begin{flushleft}
 	\HUGE\sffamily\textbf{\showmatiere}\\
 \end{flushleft}
@@ -72,7 +74,9 @@
 \end{flushleft}
 
 \endgroup
-\null\clearpage}
+
+\null\clearpage
+\setcounter{page}{1}}
 
 
 % Finally, we'll use \endinput to indicate that LaTeX can stop reading this file. LaTeX will ignore anything after this line.

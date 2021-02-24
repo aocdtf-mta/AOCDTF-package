@@ -1,0 +1,105 @@
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{smoothpic}[2013/05/05 Smoothpic]
+
+% This package defines the \smoothpic command which is a wrapper around the 
+% \includegraphics command. Any optional arguments given to \smoothpic are 
+% passed to \includegraphics.
+% Example: \smoothpic[width=5cm]{image.jpg}
+%
+% To change the width of the shade, change the value of \smoothpicshadewidth.
+% Example: \smoothpicshadewidth=32pt
+%
+
+\RequirePackage{tikz}
+\RequirePackage{graphicx}
+\usetikzlibrary{calc}
+
+% ---- Desired width of the shade
+\newlength\smoothpicshadewidth
+\smoothpicshadewidth=24pt
+
+\newlength\smoothpic@height%
+\newlength\smoothpic@width%
+
+% ---- Define horizontal shading, with opacity according 
+%      to a logistic function
+\pgfdeclarehorizontalshading{smoothpichshading}{100bp}
+  { color(0pt)=(transparent!0);
+    color(25bp)=(transparent!0);
+    color(28bp)=(transparent!1);
+    color(31bp)=(transparent!2);
+    color(34bp)=(transparent!3);
+    color(38bp)=(transparent!6);
+    color(41bp)=(transparent!11);
+    color(44bp)=(transparent!20);
+    color(47bp)=(transparent!33);
+    color(50bp)=(transparent!50);
+    color(53bp)=(transparent!67);
+    color(56bp)=(transparent!80);
+    color(59bp)=(transparent!89);
+    color(63bp)=(transparent!94);
+    color(66bp)=(transparent!97);
+    color(69bp)=(transparent!98);
+    color(72bp)=(transparent!99);
+    color(75bp)=(transparent!100);
+    color(100bp)=(transparent!100) }
+\pgfdeclarefading{smoothpichfading}{\pgfuseshading{smoothpichshading}}
+
+% ---- Define vertical shading, with opacity according 
+%      to a logistic function
+\pgfdeclareverticalshading{smoothpicvshading}{100bp}
+  { color(0pt)=(transparent!0);
+    color(25bp)=(transparent!0);
+    color(28bp)=(transparent!1);
+    color(31bp)=(transparent!2);
+    color(34bp)=(transparent!3);
+    color(38bp)=(transparent!6);
+    color(41bp)=(transparent!11);
+    color(44bp)=(transparent!20);
+    color(47bp)=(transparent!33);
+    color(50bp)=(transparent!50);
+    color(53bp)=(transparent!67);
+    color(56bp)=(transparent!80);
+    color(59bp)=(transparent!89);
+    color(63bp)=(transparent!94);
+    color(66bp)=(transparent!97);
+    color(69bp)=(transparent!98);
+    color(72bp)=(transparent!99);
+    color(75bp)=(transparent!100);
+    color(100bp)=(transparent!100) }
+\pgfdeclarefading{smoothpicvfading}{\pgfuseshading{smoothpicvshading}}
+
+% ---- Define the \smoothpic command
+\newcommand\smoothpic[2][]{%
+    \bgroup%
+    \begin{tikzpicture}
+        % --- add node containing the image  
+        \node (smoothpic) [inner sep=0.5pt] { \includegraphics[#1]{#2} };
+
+        % --- determine height and width of the image
+        \pgf@process{\pgfpointdiff{\pgfpointanchor{smoothpic}{south east}}{\pgfpointanchor{smoothpic}{north west}}}
+        \setlength\smoothpic@height{\pgf@y}
+        \setlength\smoothpic@width{\pgf@x}
+
+        % --- draw left overlay
+        \pgfpathrectangle{\pgfpointanchor{smoothpic}{south west}}{\pgfpoint{\smoothpicshadewidth}{\smoothpic@height}}
+        \pgfsetfadingforcurrentpath{smoothpichfading}{} 
+        \fill [white] (smoothpic.north west) rectangle ($(smoothpic.south west)+(\smoothpicshadewidth,0)$);
+
+        % --- draw right overlay
+        \pgfpathrectangle{\pgfpointanchor{smoothpic}{south east}}{\pgfpoint{-\smoothpicshadewidth}{\smoothpic@height}}
+        \pgfsetfadingforcurrentpath{smoothpichfading}{\pgftransformrotate{180}}
+        \fill [white] (smoothpic.north east) rectangle ($(smoothpic.south east)+(-\smoothpicshadewidth,0)$);
+
+        % --- draw top overlay
+        \pgfpathrectangle{\pgfpointanchor{smoothpic}{north east}}{\pgfpoint{\smoothpic@width}{-\smoothpicshadewidth}}
+        \pgfsetfadingforcurrentpath{smoothpicvfading}{\pgftransformrotate{180}}
+        \fill [white] (smoothpic.north west) rectangle ($(smoothpic.north east)+(0,-\smoothpicshadewidth)$);
+
+        % --- draw bottom overlay
+        \pgfpathrectangle{\pgfpointanchor{smoothpic}{south east}}{\pgfpoint{\smoothpic@width}{\smoothpicshadewidth}}
+        \pgfsetfadingforcurrentpath{smoothpicvfading}{}
+        \fill [white] (smoothpic.south west) rectangle ($(smoothpic.south east)+(0,\smoothpicshadewidth)$);
+    \end{tikzpicture}%
+    \egroup%
+}
