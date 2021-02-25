@@ -408,13 +408,23 @@
 
 \newcommand{\typemedia}[1]{\def\@typemedia{#1}}
 \newcommand{\thetypemedia}{\@typemedia}
+
+\newcommand{\nombreauteur}[1]{\def\@nombreauteur{#1}}
+\newcommand{\thenombreauteur}{\@nombreauteur}
 \makeatother
 
 \newcommand{\media}[3]{%
     \IfEqCase{#1}{%
         {paper}{#2}%
         {screen}{#3}}}%
-
+        
+\newcommand{\auteur}[6]{%
+    \IfEqCase{#1}{
+    		{0}{#2}%
+        	{1}{#3}%
+        	{2}{#4}
+        	{3}{#5}
+       	{4}{#6}}}%
 
 \newcommand{\discolorlinks}[1]{{\hypersetup{hidelinks}#1}}
 
