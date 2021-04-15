@@ -91,8 +91,9 @@
 	\usepackage{callouts, circledsteps} %annotation d'image
 	\usepackage[absolute]{textpos}  % disposition d'images
 	\usepackage{authblk, tocbibind, calc, mdframed, ragged2e, lastpage, paralist} %gestion mise en page
+	\usepackage[noframe]{showframe}
 	\usepackage{ifthen, xifthen, multido, etoolbox, ifpdf} %appel de fonction conditionnelles\\
-	\usepackage{shadethm, amsmath,newtxmath, mathtools, amsfonts, amssymb, mathrsfs, wasysym} %écriture des mathématiques avec référénces
+	\usepackage{shadethm, amsmath, mathtools, amsfonts, amssymb, mathrsfs, wasysym} %écriture des mathématiques avec référénces
 	\usepackage{chemfig, bohr, tikzorbital, chemgreek, expl3, xparse, l3keys2e, xargs} %gestion de l'écriture en chimie
 	\usepackage[version=4]{mhchem}
 	\usepackage{modiagram} %orbitale atomique
@@ -104,7 +105,7 @@
 	\usepackage{animate, multimedia, media9} %animation d'image
 	\usepackage{subcaption, capt-of} %gestion des sous-figures et des légendes communes
 	\usepackage{enumitem} %mise en page type code informatique et listes
-	\usepackage{verbatim, fancyvrb, listings, cprotect} %mise en page type code informatique et listes
+	\usepackage{verbatim, fancyvrb, fvextra, spverbatim, listings, cprotect} %mise en page type code informatique et listes
 	\usepackage{rotating, mdframed} %rotation
 	\usepackage[scale=1,angle=0,opacity=1,contents={}]{background} %gestion de l'arrière-plan 
 	\usepackage{xspace, xpatch, letltxmacro} %macros de luxe
@@ -121,6 +122,9 @@
 	\usepackage[amsmath, hyperref, thref, framed]{ntheorem}
 	\usepackage{tcolorbox, thmtools}
 	\usepackage{morewrites}
+	\usepackage{imakeidx}
+	\usepackage{blindtext}
+	\usepackage{newtxmath}
 	\let\newfloat\undefined\usepackage{floatrow} %nouvel environnement flottant
 
 		%--------------------------------------
@@ -184,8 +188,6 @@
 %\frenchbsetup{StandardLists=true} %liste au format français
 
 \tcbuselibrary{breakable, theorems, skins, xparse}
-
-\hypersetup{colorlinks = true, urlcolor = Blue, citecolor = Red, linkcolor = ForestGreen}
 
 \sisetup{%
 	locale=FR, %règles de typo française
@@ -417,7 +419,7 @@
     \IfEqCase{#1}{%
         {paper}{#2}%
         {screen}{#3}}}%
-        
+                 
 \newcommand{\auteur}[6]{%
     \IfEqCase{#1}{
     		{0}{#2}%
@@ -501,6 +503,8 @@
     \def\exempleautorefname{exemple}%
     \def\exerciceautorefname{exercice}%
     \def\appendixautorefname{annexe}%
+    \def\definitionautorefname{définition}%
+    \def\formuleautorefname{formule}%
 	}
   
 	\def\frenchfigurename{{\scshape Fig.}} %style des légendes
@@ -667,7 +671,11 @@
 	\newcommand*{\compress}{\@minipagetrue}
 	\makeatother
 
-
+	\makeatletter
+	\newenvironment{blverbatim}
+	{\def\@xobeysp{\ }\verbatim\rightskip=0pt plus 6em\relax}
+ 	{\endverbatim}
+	\makeatother
 
 %--------------------------------------
 %Mise en page du document
@@ -726,8 +734,6 @@
 	%--------------------------------------
 	%macros de mise en page
 	%--------------------------------------
-
-	\setlength{\parindent}{0pt}
 	
 	\maxsecnumdepth{subsubsection}\setsecnumdepth{subsubsection} %numérotation des sous-sous-sections
 	\setcounter{tocdepth}{1} %affichage des sous-sections dans la table des matières

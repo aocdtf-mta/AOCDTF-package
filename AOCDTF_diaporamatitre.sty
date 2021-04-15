@@ -9,7 +9,41 @@
 \subtitle{\showcours} %inscrire le nom du cours ici
 
 \date{
-\vspace{0.1cm}
+\auteur{\thenombreauteur}{}
+{\vspace{0.1cm}
+\begin{minipage}{0.49\textwidth}
+\raggedright{\footnotesize{Édition \the\year.\the\month}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.49\textwidth}
+\raggedleft{\footnotesize{
+\showauteura\\}}
+\end{minipage}}
+{\vspace{0.1cm}
+\begin{minipage}{0.49\textwidth}
+\raggedright{\footnotesize{Édition \the\year.\the\month\\
+~\\}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.49\textwidth}
+\raggedleft{\footnotesize{
+\showauteura\\
+\showauteurb\\}}
+\end{minipage}}
+{\vspace{0.1cm}
+\begin{minipage}{0.49\textwidth}
+\raggedright{\footnotesize{Édition \the\year.\the\month\\
+~\\
+~\\}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.49\textwidth}
+\raggedleft{\footnotesize{
+\showauteura\\
+\showauteurb\\
+\showauteurc\\}}
+\end{minipage}}
+{\vspace{0.1cm}
 \begin{minipage}{0.49\textwidth}
 \raggedright{\footnotesize{Édition \the\year.\the\month\\
 ~\\
@@ -23,14 +57,18 @@
 \showauteurb\\
 \showauteurc\\
 \showauteurd\\}}
-\end{minipage}}
+\end{minipage}}}
 
 \institute{
+
+\ifformation
 \begin{center}
 \begin{large}
 \textsc{\showformation} %inscrire le nom de la formation ici
 \end{large}
 \end{center}
+\else
+\fi
 
 \vspace{0.7cm}
 
@@ -48,7 +86,7 @@ Association Ouvrière des Compagnons du Devoir et du tour de France
 
 \begin{minipage}{0.29\textwidth}
 	\begin{flushleft}
-\includegraphics[height=0.7cm]{fichiers_multimedias/blason_\showacronymemetier}
+\includegraphics[height=0.7cm]{fichiers_multimedias/blason_\showsiglemetier}
 \end{flushleft}
 \end{minipage}
 \hfill

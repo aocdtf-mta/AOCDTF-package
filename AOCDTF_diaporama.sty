@@ -85,8 +85,9 @@
   	\insertsubtitle%
   	\par%
   	\vspace*{0.5em}
+	}
 
-}
+ 	\setbeamertemplate{section in toc}[sections numbered]
 
 
 	%--------------------------------------
@@ -288,8 +289,8 @@
 \newcommand{\corpsdemetier}[1]{\def\@corpsdemetier{#1}}
 \newcommand{\showcorpsdemetier}{\@corpsdemetier}
 
-\newcommand{\acronymemetier}[1]{\def\@acronymemetier{#1}}
-\newcommand{\showacronymemetier}{\@acronymemetier}
+\newcommand{\siglemetier}[1]{\def\@siglemetier{#1}}
+\newcommand{\showsiglemetier}{\@siglemetier}
 
 \newcommand{\auteura}[2]{\def\@auteura{#1 \textsc{#2}}}
 \newcommand{\showauteura}{\@auteura}
@@ -302,7 +303,21 @@
 
 \newcommand{\auteurd}[2]{\def\@auteurd{#1 \textsc{#2}}}
 \newcommand{\showauteurd}{\@auteurd}
+
+\newcommand{\nombreauteur}[1]{\def\@nombreauteur{#1}}
+\newcommand{\thenombreauteur}{\@nombreauteur}
 \makeatother
+
+\newcommand{\auteur}[6]{%
+    \IfEqCase{#1}{
+    		{0}{#2}%
+        	{1}{#3}%
+        	{2}{#4}
+        	{3}{#5}
+       	{4}{#6}}}%
+
+\newif\ifformation %instruction conditionnelle pour les l'inclusion d'une image dans le titre
+\formationtrue
 
 
 \newcommand*{\superref}[1]{\hyperref[{#1}]{\autoref*{#1} \autopageref*{#1}}} %liens avec page et titre
@@ -371,6 +386,7 @@
 	\newcommand{\pc}[1]{\SI{#1}{\percent}} %nouvelle commande pour afficher les pourcents dans SIunitx
 	
 	
+\usepackage{AOCDTF_diaporamatitre}
 	
 
 % Finally, we'll use \endinput to indicate that LaTeX can stop reading this file. LaTeX will ignore anything after this line.
