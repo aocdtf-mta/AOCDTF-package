@@ -1,0 +1,33 @@
+% Declare that this style file requires at least LaTeX version 2e.
+\NeedsTeXFormat{LaTeX2e}
+
+% Provide the name of your page, the date it was last updated, and a comment about what it's used for
+\ProvidesPackage{AOCDTF_mediamacro}
+
+%--------------------------------------
+%macros conditionnelles au type de document
+%--------------------------------------
+
+\newcommand{\mediamacro}{
+	\media{\thetypemedia}
+		{\hypersetup{hidelinks}}
+		{\hypersetup{colorlinks = true, urlcolor = Blue, citecolor = Red, linkcolor = ForestGreen}}
+	
+	\media{\thetypemedia}
+		{\newcommand*{\superref}[1]{\hyperref[{####1}]{\autoref*{####1} \autopageref*{####1}}}}
+		{\newcommand*{\superref}[1]{\hyperref[{####1}]{\autoref*{####1}}}}
+
+	\media{\thetypemedia}
+		{\newcommand*{\Href}[2]{####2 {(\url{####1})}}}
+		{\newcommand*{\Href}[2]{\href{####1}{####2}}}
+	
+	\media{\thetypemedia}
+		{}
+		{\makeatletter
+		\setboolean{@twoside}{false}
+		\makeatother}
+	
+}
+
+% Finally, we'll use \endinput to indicate that LaTeX can stop reading this file. LaTeX will ignore anything after this line.
+\endinput

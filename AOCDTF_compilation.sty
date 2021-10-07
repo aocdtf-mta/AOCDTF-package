@@ -1,0 +1,295 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{douchy_compilation}[2014/06/21 repeat-build]
+
+\RequirePackage{xstring} % \StrLen
+\RequirePackage{pgfkeys}
+\RequirePackage{pgfopts} % \ProcessPgfOptions
+\RequirePackage{pgffor}  % \foreach
+\ifx\pgfmathincluded\undefined %
+  \RequirePackage{pgfmath} % \pgfmathsetmacro
+\fi
+%\RequirePackage{trace} % debug
+
+\def\rptypeout#1{\immediate\typeout{repeat-build: #1}}
+
+% \DeclareOption{vartoken}{
+%   \gdef{\vartoken}{...}
+% }
+
+\pgfkeys{
+  /rpbuild/.cd,
+  vartoken/.store in = \rpbuild@vartoken, % expands?!
+  vartoken/.default = \undefined,
+  % note: varvals is "undefined" if not mentioned in options [];
+  %  becomes .default value if it is mentioned, but unset [varvals,]
+  %  it doesn't help if .initial or .default are before .store in -
+  %  - the varvals remains undef'd if not mentioned in options!
+  % note: even {0,...,0} has length 1; so just use {} to init that!
+  varvals/.initial = {},
+  varvals/.default = {},
+  varvals/.store in = \rpbuild@varvals,
+  % actually, this is how to set a default value for
+  %  options not mentioned in the []: by using .initial
+  %  and .get!
+  actioncode/.initial={%
+    % NOTE: \write18 in Linux is sh - not bash!
+    % (so cannot do expansion like `ls *.{log,aux}`;
+    %  must do `ls *.log *.aux`)
+    % this is the sh script part only! Usable macros:
+    %  \rpbuild@jobname - originating \jobname
+    %  \rpbuild@iter - iterator (current value);
+    %  \rpbuild@ind - numeric index for jobname
+    %  \rpbuild@indlp - same as @ind, but (left) zero-padded
+    %  \mybs - backslash escaping macro for shell
+    % do not use quotes printf '\rpbuild@jobname...' here;
+    % they will propagate inside the variable!
+    % also, comment bash lines here with % - not # !!
+    % ---
+    % this works - using printf in shell to left zero-pad @ind number:
+    %nnamecmd="printf \rpbuild@jobname-\myperc 0\rpbuild@lengthnumchars d \rpbuild@ind" ;
+    %nname=$($nnamecmd);
+    % with already zero-padded from Latex: @indlp:
+    nname="\rpbuild@jobname-\rpbuild@indlp" ;
+    %echo $nname ; % debug
+    tcmd="pdflatex
+      -shell-escape %\tikzexternalcheckshellescape %(avoid loading tikz)
+      %-halt-on-error % will disallow interaction that stops on errors - halts in sense of exit!
+      -interaction=batchmode % silent/quiet; will not halt on any error!
+      %-interaction=scrollmode % stops on some errors
+      %-interaction=errorstopmode % stops on all errors
+      -jobname "$nname" %
+      '% % (c0)
+      \string\makeatletter
+      \string\gdef\mybs\string\rpbuild@jobname{\rpbuild@jobname}
+      \string\gdef\mybs\rpbuild@vartoken{\rpbuild@iter}
+      %\string\typeout{INB4 INPUT \string\rpbuild@jobname}
+      \string\makeatother
+      \string\input{\rpbuild@jobname}%
+      '" ;
+    %echo "$tcmd" ;% | hexdump -C ; % debug
+    %set -x; % better for debug - inside the eval, to avoid repeated prints
+    eval "set -x; $tcmd" ; % execute
+  },
+  actioncode/.get = \rpbuild@actcode,
+  postactioncode/.store in = \rpbuild@postcode,
+  postactioncode/.default = {}, % (c1)
+}
+
+\def\unprotect#1{ %
+  % http://tex.stackexchange.com/a/57233/2595
+  \rptypeout{unprotecting: #1} %
+  \edef#1{\expandafter\strip@prefix\meaning#1} %
+}
+
+\gdef\rpbuild@exitallifneeded{}
+
+% \ProcessOptions\relax
+\ProcessPgfOptions{/rpbuild}\relax
+
+% \leftpadzero{\totalcharslength}{\inputnumstring}{\outstrcmd}
+% (isn't expandable itself, but returns into a macro that will be)
+\def\leftpadzero#1#2#3{%
+  \xdef#3{#2} %initialize; %\xdef\rpbuild@tmpoutstr{#2}%
+  \StrLen{#3}[\rpbuild@tmpinnumchars]%
+  % z(ero)c(hars)toadd - total;
+  \pgfmathtruncatemacro{\rpbuild@tmpzctoadd}{#1-\rpbuild@tmpinnumchars}%
+  \ifnum\rpbuild@tmpzctoadd>0{%
+    % start the foreach from 1, for accurate count
+    \foreach \ix in {1,...,\rpbuild@tmpzctoadd}{%
+      \xdef#3{0#3}% concatenate a "0" from left
+    }%
+  }\fi%
+  %\rpbuild@tmpoutstr% return;
+  % no return here - now we have it in the #3 macro
+} % end def \leftpadzero
+
+
+% check first if we're running in the inner loop:
+\ifx\rpbuild@jobname\undefined{%
+
+  \rptypeout{\string\r pbuild@jobname is undefined: first run!} %
+
+  % in these checks, in order to exit properly, must have:
+  %  ... \expandafter \endinput } \fi ... ; else getting:
+  %  (\end occurred inside a group at level 1) warning +
+  %  ### simple group (level 1) entered at line 51 ({) ...
+  %  Because of that, we cannot use \else - so the conditions
+  %  are repeated in order to get console printouts!
+  % Though, below we can use \else, because that is where
+  %  the \endinput is!
+
+  % check if we have vartoken
+  \ifx\rpbuild@vartoken\undefined{ %
+    \rptypeout{vartoken undefined; will not run!} %
+    \expandafter\endinput %
+  }\fi %
+  \ifx\rpbuild@vartoken\undefined\else{ %
+    \rptypeout{vartoken defined as: \meaning\rpbuild@vartoken} %
+  }\fi
+
+  % check if we have varvals
+  \ifx\rpbuild@varvals\undefined{ %
+    \rptypeout{varvals undefined; will not run!} %
+    \expandafter\endinput %
+  }\fi %
+  \ifx\rpbuild@varvals\undefined\else{ %
+    \rptypeout{varvals defined as: \meaning\rpbuild@varvals} %
+  }\fi
+
+  % check if we have range - by looping the
+  % argument, and calculating "last index"
+  \def\rpbuild@length{0}
+  \foreach \rpbuild@iter in \rpbuild@varvals{ %
+    \pgfmathtruncatemacro{\rpbuild@length}{\rpbuild@length+1} %
+    \global\let\rpbuild@length\rpbuild@length % must globalize!
+  }
+  \ifnum\rpbuild@length>0{%
+    \rptypeout{have {\rpbuild@length} vaues in varvals} %
+  }\else{%
+    \rptypeout{do not have vaues in varvals; will not run!} %
+    \expandafter\endinput %
+  }\fi
+
+  % "The control sequence \pdfshellescape is (only?) available in pdftex"
+  % http://tex.stackexchange.com/a/13253/2595
+  \ifnum\pdfshellescape=1{ %
+    % Yes, enabled
+  }\else{ %
+    % No, disabled
+    \rptypeout{** Sorry, you'll need to call with `pdflatex -shell-escape`} %
+    \rptypeout{** to have this work; will not run!} %
+    \expandafter\endinput %
+  }\fi
+
+  \rptypeout{ ... we got here - time to start loopin' ... } %
+
+  % \rpbuild@jobname is the master, originating \jobname,
+  % but also a signal that we're inside the loop!
+  \edef\rpbuild@jobname{\jobname}%
+  \StrLen{\rpbuild@length}[\rpbuild@lengthnumchars]
+
+  % http://tex.stackexchange.com/a/69294/2595
+  % must escape backslash like this, to have escaped linefeed
+  % character \n in \write18 output for the shell (raw ASCII)!
+  \begingroup
+    \catcode `~=11
+    \gdef\mytilde{~}
+    \catcode `\|=0
+    \catcode `\\=11
+    |gdef|LF{\n} % \LF becomes (ASCII) "\n" (verbatim char!)
+    |gdef|n{\n} % \n becomes (ASCII) "\n" (verbatim char!)
+    |gdef|ELF{\\n} % \ELF becomes (ASCII) "\\n" - escaped backslash for shell!
+  |endgroup
+
+  % get expandable ASCII macros
+  %  cannot do it like this:
+  %   \edef\mybs{\string\char092} \typeout{mybs \mybs}
+  %  must use the uccode/uppercase trick (as in:
+  %  http://tex.stackexchange.com/q/60951/#comment129115_60960 )
+  \bgroup
+    \uccode`A=37 % chr(37) percent sign %
+    \uccode`B=92 % chr(92) backslash    \
+    \uppercase{
+      \gdef\myperc{A}
+      \gdef\mybs{B}
+      \gdef\mybsbs{BB}
+      %\typeout{==A==B==} % debug
+    }
+  \egroup
+
+  % run the loop with the action code
+
+  % since we will use shell-escape,
+  %  we might as well use printf in the (ba)sh shell (Linux)
+  %  to format the numbers added to the filename;
+  %  but can also use a Latex function.
+  % also, note that line endings here will be gobbled by
+  %  latex (replaced by space), so the whole \cmd will
+  %  arrive to (ba)sh as a single line - remember semicolon delimiters!
+  %  heading tab space will be gobbled too
+  % also note that \rp.. is seen by bash as "\r", so that
+  %  must be escaped; with just \mybs nowork; in this case,
+  %  have to also use single quotes (instead of double -
+  %  in "\string\def\string\rpbuild@..")
+  \gdef\rpbuild@ind{0}
+  \gdef\rpbuild@indlp{0} %index, left padded
+  \foreach \rpbuild@iter in \rpbuild@varvals{ %
+    %\leftpadzero{5}{120}{\ret} %\typeout{ret \ret} % 00120
+    \leftpadzero{\rpbuild@lengthnumchars}{\rpbuild@ind}{\rpbuild@indlp} %\typeout{ret \rpbuild@indlp} %
+    % compose command(s)
+    % (below unused snippet left for dev reference):
+%     \edef\cmd{%
+%       % do not use quotes printf '\rpbuild@jobname...' here;
+%       % they will propagate inside the variable!
+%       % also, comment bash lines here with % - not # !!
+%       nnamecmd="printf \rpbuild@jobname-\myperc 0\rpbuild@lengthnumchars d \rpbuild@iter" ;
+%       nname=$($nnamecmd);
+%       echo $nname ;
+%       echo
+%       pdflatex
+%         -shell-escape %\tikzexternalcheckshellescape
+%         -halt-on-error
+%         -interaction=batchmode
+%         -jobname "$nname"
+%         '%
+%         \string\def\mybs\string\rpbuild@jobname{\rpbuild@jobname}
+%         \string\input{\rpbuild@jobname}%
+%         '
+%     } % \cmd
+    % execute
+    \immediate\write18{%
+%       \cmd% OK
+      \rpbuild@actcode% OK
+    }%
+    % increase count for file/jobname:
+    \pgfmathtruncatemacro{\rpbuild@ind}{\rpbuild@ind+1} %
+    \global\let\rpbuild@ind\rpbuild@ind % globalize
+  } % end \foreach
+
+  % do post action code, if any:
+  \ifx\rpbuild@postcode\undefined{%
+    \rptypeout{no post action code} %
+  }\else{%
+    \rptypeout{post action code:} %
+    \edef\cmd{
+      eval "set -x; \rpbuild@postcode" ; % execute
+    }
+    \immediate\write18{\cmd} %
+  }\fi
+
+  \rptypeout{%
+    Finished. Due to the use of repeat-build, ^^J
+    will now exit without compiling the master document. ^^J
+    Comment the `\string\usepackage[...]{repeat-build}` ^^J
+    line in your document code to go back to normal ^^J
+    compilation behavior. ^^J
+  } %
+  \gdef\rpbuild@exitallifneeded{\stop}
+}%\fi % end \ifx\rpbuild@jobname\undefined
+\else{%
+  %\ifx\rpbuild@jobname is not undefined!
+  \rptypeout{ > in loop, building \jobname ^^J
+  (repeat-build package will get out of the way now) ... } %
+}\fi % end \ifx\rpbuild@jobname\undefined
+
+% Latex2e \stop - exit prematurely/stop compilation
+%  *without* an error prompt;
+\rpbuild@exitallifneeded %
+
+\endinput
+
+% (c0)
+% escape trouble:
+%\string\gdef\mybsbs\mybs\string\rpbuild@jobname{\rpbuild@jobname}
+%\string\gdef\mybsbs\mybs\rpbuild@vartoken{\rpbuild@iter}
+%\string\typeout{INB4 INPUT \mybsbs\mybs\rpbuild@jobname}
+%% ! Use of \\ doesn't match its definition.
+%% <write> INB4 INPUT \\r ... epeat-build-test
+% is like this: ...
+
+% (c1)
+% do not use spaces in keys for usepackage;
+% e.g. for below getting:
+% ! Package pgfkeys Error: I do not know the key '/rpbuild/postactioncode'
+%post action code/.store in = \rpbuild@postcode,
+%post action code/.default = {},
