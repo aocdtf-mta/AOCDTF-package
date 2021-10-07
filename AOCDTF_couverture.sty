@@ -36,21 +36,23 @@
 %texte dans bandeau vertical
 %--------------------------------------
   
-  \media{\thetypemedia}{
-  \begin{tikzpicture}[remember picture, overlay]
-	\begin{scope}[shift={(current page.south west)}]
-			\draw (1.8,1) node [right, rotate=90, opacity=0.7] {\sffamily\textbf{\LARGE\color{bleulogo}\MakeTextUppercase{\showcorpsdemetier}}};
-			\draw (2.5,1) node [right, rotate=90, opacity=0.7] {\sffamily\textbf{\LARGE\color{bleulogo}ASSOCIATION OUVRIÈRE DES COMPAGNONS DU DEVOIR ET DU TOUR DE FRANCE}};
-			\draw (3.4,29) node [left, rotate=90, opacity=0.7] {\sffamily\textls[200]{\Huge\textbf{\color{bleulogo}\MakeTextUppercase{\showformation}}}};
-		\end{scope}
-	\end{tikzpicture}}
-  {	\begin{tikzpicture}[remember picture, overlay]
+  
+  \ifformation
+	\begin{tikzpicture}[remember picture, overlay]
 	\begin{scope}[shift={(current page.south west)}]
 			\draw (1,1) node [right, rotate=90, opacity=0.7] {\sffamily\textbf{\LARGE\color{bleulogo}\MakeTextUppercase{\showcorpsdemetier}}};
 			\draw (1.7,1) node [right, rotate=90, opacity=0.7] {\sffamily\textbf{\LARGE\color{bleulogo}ASSOCIATION OUVRIÈRE DES COMPAGNONS DU DEVOIR ET DU TOUR DE FRANCE}};
 			\draw (3,29) node [left, rotate=90, opacity=0.7] {\sffamily\textls[200]{\Huge\textbf{\color{bleulogo}\MakeTextUppercase{\showformation}}}};
 		\end{scope}
-	\end{tikzpicture}} %début de chapitre à "droite" mais comme demarrage de la numérotation inversé avec la page de titre, ça décale l'ouverture des chapitre à gauche
+	\end{tikzpicture}
+\else
+  \begin{tikzpicture}[remember picture, overlay]
+	\begin{scope}[shift={(current page.south west)}]
+			\draw (1.8,1) node [right, rotate=90, opacity=0.7] {\sffamily\textbf{\LARGE\color{bleulogo}\MakeTextUppercase{\showcorpsdemetier}}};
+			\draw (2.5,1) node [right, rotate=90, opacity=0.7] {\sffamily\textbf{\LARGE\color{bleulogo}ASSOCIATION OUVRIÈRE DES COMPAGNONS DU DEVOIR ET DU TOUR DE FRANCE}};
+		\end{scope}
+	\end{tikzpicture}
+\fi
 
 %--------------------------------------
 %titre 
