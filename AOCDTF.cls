@@ -2,7 +2,8 @@
 \NeedsTeXFormat{LaTeX2e}
 
 % Provide the name of your page, the date it was last updated, and a comment about what it's used for
-\ProvidesPackage{AOCDTF}
+\ProvidesClass{AOCDTF}
+\LoadClass[a4paper, 11pt, twoside, fleqn]{memoir}
 
 %--------------------------------------
 %PREAMBULE COMMUN A TOUS LES COURS - A MODIFIER AVEC PRUDENCE
@@ -130,7 +131,7 @@
 	\RequirePackage{tcolorbox, pbox}
 	\RequirePackage{morewrites}
 	\RequirePackage{blindtext}
-	\RequirePackage{newtxmath, minted, threeparttablex}
+	\RequirePackage{newtxmath, minted, threeparttablex, hvqrurl}
 
 	
 		%--------------------------------------
@@ -246,6 +247,7 @@
 
 \DeclareSIUnit\force{f}
 \DeclareSIUnit\bit{bit}	
+
 
 %\floatsetup[table]{capposition=top}
 
